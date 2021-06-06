@@ -1,14 +1,15 @@
 import React from "react";
+import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import Rating from "react-rating";
 
 import shopData from "../../shopData";
 
 import "./ProductDesc.scss";
+import { getProductById } from "../../redux/slices/product";
 
-export default function ProductDesc({ match }) {
-  const product = shopData.find((p) => p.id === Number(match.params.id));
-
+function ProductDesc({ product }) {
+  console.log(product);
   if (product)
     return (
       <div className='container-fluid'>
@@ -57,3 +58,22 @@ export default function ProductDesc({ match }) {
     );
   }
 }
+
+const mapStateToProps = (
+  state,
+  {
+    match: {
+      params: { id },
+    },
+  }
+) => {
+  return {
+    product: getProductById(id)(state),
+  };
+};
+
+// const mapDispatchToProps = (dispatch) => ({
+//   fetchProductByIdAsync: (id) => dispatch(fetchProductByIdAsync(id)),
+// });
+
+export default connect(mapStateToProps)(ProductDesc);
