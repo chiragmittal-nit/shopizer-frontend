@@ -45,7 +45,5 @@ export const getAllProducts = createSelector(
 
 export const getProductById = (id) =>
   createSelector(getAllProducts, (products) => {
-    console.log("getProductbyid : ", products);
-
     return products ? products.find((p) => p._id === id) : null;
   });

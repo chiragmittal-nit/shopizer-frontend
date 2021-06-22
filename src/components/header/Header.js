@@ -1,9 +1,10 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React from 'react';
+import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 
-import "./Header.scss";
+import './Header.scss';
 
-export default function Header() {
+function Header({ totalQuantity }) {
   return (
     <nav className='navbar navbar-expand-lg'>
       <div className='container-fluid'>
@@ -32,8 +33,8 @@ export default function Header() {
               </Link>
             </li>
             <li className='nav-item'>
-              <Link className='nav-link text-white' to='#'>
-                <i className='fas fa-shopping-cart'></i>
+              <Link className='nav-link text-white' to='/check-out'>
+                <i className='fas fa-shopping-cart'></i> {totalQuantity}
               </Link>
             </li>
           </ul>
@@ -42,3 +43,9 @@ export default function Header() {
     </nav>
   );
 }
+
+const mapStateToProps = (state) => {
+  return { totalQuantity: state.cart.totalQuantity };
+};
+
+export default connect(mapStateToProps)(Header);

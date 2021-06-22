@@ -1,15 +1,17 @@
-import React from "react";
-import { connect } from "react-redux";
-import { Link } from "react-router-dom";
-import Rating from "react-rating";
+import React from 'react';
+import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
+import Rating from 'react-rating';
 
-import shopData from "../../shopData";
+import shopData from '../../shopData';
 
-import "./ProductDesc.scss";
-import { getProductById } from "../../redux/slices/product";
+import './ProductDesc.scss';
+import { getProductById } from '../../redux/slices/product';
+import { addItem } from '../../redux/slices/cart';
 
-function ProductDesc({ product }) {
-  console.log(product);
+function ProductDesc({ product, addItem }) {
+  const [quantity, setQuantity] = React.useState(1);
+
   if (product)
     return (
       <div className='container-fluid'>
@@ -32,13 +34,22 @@ function ProductDesc({ product }) {
               <h5 className='text-capitalize'>select quantity : </h5>
               {product.countInStock > 0 ? (
                 <>
-                  <select>
+                  <select
+                    value={quantity}
+                    onChange={(e) => setQuantity(Number(e.target.value))}
+                  >
                     {[...Array(product.countInStock)].map((value, index) => (
-                      <option value={index + 1}>{index + 1}</option>
+                      <option key={index + 1} value={index + 1}>
+                        {index + 1}
+                      </option>
                     ))}
                   </select>
                   <hr />
-                  <button type='button' className='btn btn-dark text-uppercase'>
+                  <button
+                    type='button'
+                    className='btn btn-dark text-uppercase'
+                    onClick={() => addItem(product, quantity)}
+                  >
                     add to cart
                   </button>
                 </>
@@ -53,7 +64,7 @@ function ProductDesc({ product }) {
   else {
     return (
       <div>
-        No Such Product Exist !! <Link to={"/"}>HomePage</Link>
+        No Such Product Exist !! <Link to={'/'}>HomePage</Link>
       </div>
     );
   }
@@ -72,8 +83,8 @@ const mapStateToProps = (
   };
 };
 
-// const mapDispatchToProps = (dispatch) => ({
-//   fetchProductByIdAsync: (id) => dispatch(fetchProductByIdAsync(id)),
-// });
+const mapDispatchToProps = (dispatch) => ({
+  addItem: (product, quantity) => dispatch(addItem({ product, quantity })),
+});
 
-export default connect(mapStateToProps)(ProductDesc);
+export default connect(mapStateToProps, mapDispatchToProps)(ProductDesc);

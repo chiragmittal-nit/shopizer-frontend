@@ -1,9 +1,9 @@
-import React from "react";
-import { connect } from "react-redux";
-import Product from "../../components/product/Product.js";
-import { fetchAllProductsAsync } from "../../redux/slices/product.js";
+import React from 'react';
+import { connect } from 'react-redux';
+import Product from '../../components/product/Product.js';
+import { fetchAllProductsAsync } from '../../redux/slices/product.js';
 
-import "./HomePage.scss";
+import './HomePage.scss';
 
 function HomePage({ products, error, isFetching, fetchAllProductsAsync }) {
   React.useEffect(() => {

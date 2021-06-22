@@ -3,15 +3,10 @@ import { withRouter } from "react-router";
 import Rating from "react-rating";
 
 function Product({ _id: id, name, imageUrl, rating, price, history }) {
-  const handleClick = () => {
-    console.log(id);
-    history.push(`/product/${id}`);
-  };
-
   return (
     <div
       className='card h-100 '
-      onClick={handleClick}
+      onClick={() => history.push(`/product/${id}`)}
       style={{ cursor: "pointer" }}
     >
       <div className='card-body'>
