@@ -3,8 +3,6 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import Rating from 'react-rating';
 
-import shopData from '../../shopData';
-
 import './ProductDesc.scss';
 import { getProductById } from '../../redux/slices/product';
 import { addItem } from '../../redux/slices/cart';

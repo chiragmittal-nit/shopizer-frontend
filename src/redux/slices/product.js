@@ -1,9 +1,9 @@
-import { createSlice, createSelector } from "@reduxjs/toolkit";
+import { createSlice, createSelector } from '@reduxjs/toolkit';
 
-import { fetchAllProducts, fetchProductById } from "../../api";
+import { fetchAllProducts } from '../../services/productService';
 
 const product = createSlice({
-  name: "product",
+  name: 'product',
   initialState: { products: [], error: null, isFetching: false },
   reducers: {
     fetchProductsStart: (state, action) => {
@@ -11,6 +11,7 @@ const product = createSlice({
     },
     fetchProductsSuccess: (state, action) => {
       state.products = action.payload;
+      state.error = null;
       state.isFetching = false;
     },
 
@@ -22,7 +23,7 @@ const product = createSlice({
 });
 
 export default product.reducer;
-export const {} = product.actions;
+// export const {} = product.actions;
 
 export const fetchAllProductsAsync = () => (dispatch, getState) => {
   const { fetchProductsFailure, fetchProductsStart, fetchProductsSuccess } =

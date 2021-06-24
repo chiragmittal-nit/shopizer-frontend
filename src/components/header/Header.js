@@ -28,7 +28,7 @@ function Header({ totalQuantity }) {
         >
           <ul className='navbar-nav'>
             <li className='nav-item'>
-              <Link className='nav-link text-white' to='#'>
+              <Link className='nav-link text-white' to='/login'>
                 Login
               </Link>
             </li>

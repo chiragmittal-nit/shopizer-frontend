@@ -29,6 +29,7 @@ const cart = createSlice({
     },
     deleteItem: (state, action) => {
       const { product } = action.payload;
+      console.log(product);
       state.totalQuantity -= product.quantity;
       delete state.items[product._id];
     },

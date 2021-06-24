@@ -26,7 +26,6 @@ function CheckoutPage({ cart: { items }, updateItem, deleteItem }) {
             <tbody>
               {Object.keys(items).map((key) => {
                 const item = items[key];
-                console.log(item);
                 return (
                   <tr key={key}>
                     <td>{item.name}</td>
