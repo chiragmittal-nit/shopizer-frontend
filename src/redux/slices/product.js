@@ -70,7 +70,6 @@ export const getFilteredProducts = createSelector(
   (state) => state.product,
   (product) => {
     let filteredProducts;
-    console.log(product);
     const { searchKey, sortBy, category } = product.filterOptions;
     const allProducts = product.products;
 

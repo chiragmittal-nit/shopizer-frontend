@@ -8,7 +8,6 @@ function RegisterPage({ registerUser, history }) {
   const [password, setPassword] = React.useState('');
   const [confirmPassword, setConfirmPassword] = React.useState('');
 
-  console.log(history);
   const handleRegister = (e) => {
     e.preventDefault();
 

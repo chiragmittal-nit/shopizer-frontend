@@ -7,7 +7,6 @@ import { emptyCart } from './cart';
 const _ = require('lodash');
 
 const currUser = auth.getCurrentUser();
-console.log('inside user.js');
 
 const initialState = currUser
   ? { currentUser: currUser, error: null, isLoggedIn: true }

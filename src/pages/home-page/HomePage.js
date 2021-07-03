@@ -19,9 +19,9 @@ function HomePage({ products, error, isFetching, fetchAllProductsAsync }) {
   return (
     <>
       {isFetching ? (
-        <Loader />
+        <Loader message="Getting Good Stuff...." />
       ) : error ? (
-        <Error errorMessage={error} />
+        <Error message={error} />
       ) : (
         <div className="container">
           <Filter />

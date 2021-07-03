@@ -63,7 +63,7 @@ function ProductDesc({ product, addItem }) {
   else {
     return (
       <Error
-        errorMessage={
+        message={
           <div>
             No Such Product Exist !! <Link to={'/'}>HomePage</Link>
           </div>

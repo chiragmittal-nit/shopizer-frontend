@@ -39,7 +39,7 @@ function LoginPage({ loginUser, history, error }) {
               aria-hidden="true"
             ></i>
 
-            {error && <Error errorMessage={error} />}
+            {error && <Error message={error} />}
 
             <form onSubmit={handleLogin}>
               <input
