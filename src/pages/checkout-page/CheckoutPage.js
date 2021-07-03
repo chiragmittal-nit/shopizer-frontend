@@ -1,8 +1,20 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { deleteItem, updateItem } from '../../redux/slices/cart';
 
-function CheckoutPage({ cart: { items }, updateItem, deleteItem }) {
+function CheckoutPage({
+  cart: { items, totalQuantity },
+  updateItem,
+  deleteItem,
+}) {
+  if (!totalQuantity)
+    return (
+      <div>
+        Cart is Empty !!!! Please add items from <Link to='/'>Home</Link>
+      </div>
+    );
+
   let subTotal = Object.keys(items).reduce(
     (acc, key) => acc + items[key].quantity * items[key].price,
     0

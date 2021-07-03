@@ -1,38 +1,50 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, createSelector } from '@reduxjs/toolkit';
 import auth from '../../services/authService';
 
 import { registerUser } from '../../services/userSevice';
+import { emptyCart } from './cart';
+
+const _ = require('lodash');
+
+const currUser = auth.getCurrentUser();
+console.log('inside user.js');
+
+const initialState = currUser
+  ? { currentUser: currUser, error: null, isLoggedIn: true }
+  : { currentUser: null, error: null, isLoggedIn: false };
 
 const user = createSlice({
   name: 'user',
-  initialState: { currentUser: null, error: '', isValidating: false },
+  initialState,
   reducers: {
-    registerUserStart: (state, action) => {
-      state.isValidating = true;
-    },
+    registerUserStart: (state, action) => {},
 
     registerUserSuccess: (state, action) => {
       state.currentUser = action.payload;
       state.error = null;
-      state.isValidating = false;
+      state.isLoggedIn = false;
     },
     registerUserFailure: (state, action) => {
       state.error = action.payload;
-      state.isValidating = false;
+      state.isLoggedIn = false;
     },
 
     loginUserStart: (state, action) => {
-      state.isValidating = true;
+      state.error = null;
     },
 
     loginUserSuccess: (state, action) => {
       state.currentUser = action.payload;
       state.error = null;
-      state.isValidating = false;
+      state.isLoggedIn = true;
     },
     loginUserFailure: (state, action) => {
       state.error = action.payload;
-      state.isValidating = false;
+      state.isLoggedIn = false;
+    },
+    logoutUser: (state, action) => {
+      state.currentUser = state.error = null;
+      state.isLoggedIn = false;
     },
   },
 });
@@ -52,8 +64,11 @@ export const registerUserAsync = (newUser) => (dispatch) => {
       window.location = '/';
     })
     .catch((err) => {
-      console.log(err);
-      return dispatch(registerUserFailure(err.message));
+      if (!err.response)
+        return dispatch(
+          registerUserFailure('Internal Server Error, Try After Some time.')
+        );
+      return dispatch(registerUserFailure(err.response.data));
     });
 };
 export const loginUserAsync = (credentials) => (dispatch) => {
@@ -64,10 +79,37 @@ export const loginUserAsync = (credentials) => (dispatch) => {
     .loginUser(credentials)
     .then(({ data: jwt }) => {
       localStorage.setItem(process.env.REACT_APP_tokenKey, jwt);
-      dispatch(loginUserSuccess(auth.getCurrentUser()));
-      window.location.href = '/';
+      dispatch(
+        loginUserSuccess(
+          _.pick(auth.getCurrentUser(), ['name', 'email', '_id'])
+        )
+      );
+      window.location = '/';
     })
     .catch((err) => {
-      return dispatch(loginUserFailure(err.message));
+      if (!err.response)
+        return dispatch(
+          loginUserFailure('Internal Server Error, Try After Some time.')
+        );
+      return dispatch(loginUserFailure(err.response.data));
     });
 };
+
+export const loginUserFromStorage = (user) => (dispatch) => {
+  const { loginUserStart, loginUserSuccess } = user.actions;
+  dispatch(loginUserStart());
+  return dispatch(loginUserSuccess(_.pick(user, ['name', 'email', '_id'])));
+};
+
+export const logout = (dispatch) => {
+  auth.logout();
+  dispatch(user.actions.logoutUser());
+  dispatch(emptyCart());
+  // window.location = '/';
+};
+
+export const getLoginError = () =>
+  createSelector(
+    (state) => state.user,
+    (user) => user.error
+  );

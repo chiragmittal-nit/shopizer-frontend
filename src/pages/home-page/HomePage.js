@@ -1,7 +1,13 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import Error from '../../components/error/Error.js';
+import Filter from '../../components/filter/Filter.js';
+import Loader from '../../components/loader/Loader.js';
 import Product from '../../components/product/Product.js';
-import { fetchAllProductsAsync } from '../../redux/slices/product.js';
+import {
+  fetchAllProductsAsync,
+  getFilteredProducts,
+} from '../../redux/slices/product.js';
 
 import './HomePage.scss';
 
@@ -13,15 +19,16 @@ function HomePage({ products, error, isFetching, fetchAllProductsAsync }) {
   return (
     <>
       {isFetching ? (
-        <h1>Loading ...</h1>
+        <Loader />
       ) : error ? (
-        <h1>{error}</h1>
+        <Error errorMessage={error} />
       ) : (
-        <div className='container'>
-          <div className='row row-cols-1 row-cols-md-3 row-cols-lg-4 justify-content-center'>
+        <div className="container">
+          <Filter />
+          <div className="row row-cols-1 row-cols-md-3 row-cols-lg-4 justify-content-center">
             {products.length &&
-              products.map((product, index) => (
-                <div key={product._id} className='col m-3'>
+              products.map((product) => (
+                <div key={product._id} className="col m-3">
                   <Product {...product} />
                 </div>
               ))}
@@ -33,10 +40,11 @@ function HomePage({ products, error, isFetching, fetchAllProductsAsync }) {
 }
 
 const mapStateToProps = (state) => {
+  const { product } = state;
   return {
-    isFetching: state.product.isFetching,
-    products: state.product.products,
-    error: state.product.error,
+    isFetching: product.isFetching,
+    products: getFilteredProducts(state),
+    error: product.error,
   };
 };
 

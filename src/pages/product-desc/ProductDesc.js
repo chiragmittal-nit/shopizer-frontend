@@ -6,30 +6,31 @@ import Rating from 'react-rating';
 import './ProductDesc.scss';
 import { getProductById } from '../../redux/slices/product';
 import { addItem } from '../../redux/slices/cart';
+import Error from './../../components/error/Error';
 
 function ProductDesc({ product, addItem }) {
   const [quantity, setQuantity] = React.useState(1);
 
   if (product)
     return (
-      <div className='container-fluid'>
-        <div className='row'>
-          <div className='col-md-6'>
-            <div className='card p-2 m-2'>
+      <div className="container-fluid">
+        <div className="row">
+          <div className="col-md-6">
+            <div className="card p-2 m-2">
               <h5>{product.name}</h5>
               <img
                 src={product.imageUrl}
                 alt={product.name}
-                className='img-fluid big-img'
+                className="img-fluid big-img"
               />
               <p>{product.description}</p>
             </div>
           </div>
-          <div className='col-md-6 text-start'>
-            <div className='m-2'>
-              <h5 className='text-capitalize'>{`price : ${product.price}`}</h5>
+          <div className="col-md-6 text-start">
+            <div className="m-2">
+              <h5 className="text-capitalize">{`price : ${product.price}`}</h5>
               <hr />
-              <h5 className='text-capitalize'>select quantity : </h5>
+              <h5 className="text-capitalize">select quantity : </h5>
               {product.countInStock > 0 ? (
                 <>
                   <select
@@ -44,15 +45,15 @@ function ProductDesc({ product, addItem }) {
                   </select>
                   <hr />
                   <button
-                    type='button'
-                    className='btn btn-dark text-uppercase'
+                    type="button"
+                    className="btn btn-dark text-uppercase"
                     onClick={() => addItem(product, quantity)}
                   >
                     add to cart
                   </button>
                 </>
               ) : (
-                <p className='text-danger text-capitalize'>Out of Stock</p>
+                <p className="text-danger text-capitalize">Out of Stock</p>
               )}
             </div>
           </div>
@@ -61,9 +62,13 @@ function ProductDesc({ product, addItem }) {
     );
   else {
     return (
-      <div>
-        No Such Product Exist !! <Link to={'/'}>HomePage</Link>
-      </div>
+      <Error
+        errorMessage={
+          <div>
+            No Such Product Exist !! <Link to={'/'}>HomePage</Link>
+          </div>
+        }
+      />
     );
   }
 }
