@@ -1,5 +1,8 @@
-import { createSlice } from '@reduxjs/toolkit';
-import { placeOrder } from '../../services/orderService';
+import { createSlice, createSelector } from '@reduxjs/toolkit';
+import {
+  fetchOrdersListByUserId,
+  placeOrder,
+} from '../../services/orderService';
 
 const order = createSlice({
   name: 'order',
@@ -13,6 +16,19 @@ const order = createSlice({
       state.orderDetails = action.payload;
     },
     placeOrderFailure: (state, action) => {
+      state.error = action.payload;
+      state.isLoading = false;
+    },
+
+    fetchOrdersListRequest: (state, action) => {
+      state.isLoading = true;
+    },
+
+    fetchOrdersListSuccess: (state, action) => {
+      state.allOrders = action.payload;
+      state.isLoading = false;
+    },
+    fetchOrdersListFailure: (state, action) => {
       state.error = action.payload;
       state.isLoading = false;
     },
@@ -38,3 +54,32 @@ export const placeOrderAsync = (token, amount) => (dispatch, getState) => {
     .then((res) => dispatch(placeOrderSuccess(res.data)))
     .catch((err) => dispatch(placeOrderFailure(err.response.data)));
 };
+
+export const fetchOrdersListByUserIdAsync = () => (dispatch, getState) => {
+  const {
+    fetchOrdersListRequest,
+    fetchOrdersListSuccess,
+    fetchOrdersListFailure,
+  } = order.actions;
+  dispatch(fetchOrdersListRequest());
+
+  fetchOrdersListByUserId(getState().user.currentUser._id)
+    .then((res) => dispatch(fetchOrdersListSuccess(res.data)))
+    .catch((error) => {
+      if (error.response) dispatch(fetchOrdersListFailure(error.response.data));
+      else
+        dispatch(
+          fetchOrdersListFailure('Internal Server Error, Try After Some time.')
+        );
+    });
+};
+
+const getAllOrders = createSelector(
+  (state) => state.order,
+  (order) => order.allOrders
+);
+
+export const getOrderById = (orderId) =>
+  createSelector(getAllOrders, (allOrders) =>
+    allOrders ? allOrders.find((order) => order._id === orderId) : null
+  );

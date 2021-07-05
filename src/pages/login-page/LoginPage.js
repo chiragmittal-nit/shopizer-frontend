@@ -5,13 +5,15 @@ import { loginUserAsync } from '../../redux/slices/user';
 import auth from '../../services/authService';
 import Error from './../../components/error/Error';
 
-function LoginPage({ loginUser, history, error }) {
+function LoginPage({ loginUser, history, location, error }) {
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
 
   React.useEffect(() => {
+    console.log(auth.getCurrentUser());
     if (auth.getCurrentUser()) window.location = '/';
   }, []);
+
   const handleLogin = (e) => {
     e.preventDefault();
 
@@ -19,9 +21,12 @@ function LoginPage({ loginUser, history, error }) {
     setEmail('');
     setPassword('');
     loginUser(credentials);
-
-    // history.replace('/');
+    if (!error) {
+      const { state } = location;
+      window.location = state ? state.referrer.pathname : '/';
+    }
   };
+
   return (
     <div>
       <div className="row justify-content-center m-3">

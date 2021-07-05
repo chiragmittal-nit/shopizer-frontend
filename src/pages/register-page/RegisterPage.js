@@ -23,9 +23,7 @@ function RegisterPage({ registerUser, history }) {
     setEmail('');
     setPassword('');
     setConfirmPassword('');
-    if (registerUser(user)) {
-      history.replaceState('/');
-    }
+    registerUser(user);
   };
 
   return (

@@ -70,7 +70,7 @@ export const registerUserAsync = (newUser) => (dispatch) => {
       return dispatch(registerUserFailure(err.response.data));
     });
 };
-export const loginUserAsync = (credentials) => (dispatch) => {
+export const loginUserAsync = (credentials, location) => (dispatch) => {
   const { loginUserStart, loginUserSuccess, loginUserFailure } = user.actions;
   dispatch(loginUserStart());
 
@@ -83,14 +83,15 @@ export const loginUserAsync = (credentials) => (dispatch) => {
           _.pick(auth.getCurrentUser(), ['name', 'email', '_id'])
         )
       );
-      window.location = '/';
     })
     .catch((err) => {
-      if (!err.response)
-        return dispatch(
+      if (!err.response) {
+        dispatch(
           loginUserFailure('Internal Server Error, Try After Some time.')
         );
-      return dispatch(loginUserFailure(err.response.data));
+      } else {
+        dispatch(loginUserFailure(err.response.data));
+      }
     });
 };
 
@@ -104,7 +105,7 @@ export const logout = (dispatch) => {
   auth.logout();
   dispatch(user.actions.logoutUser());
   dispatch(emptyCart());
-  // window.location = '/';
+  window.location = '/';
 };
 
 export const getLoginError = () =>
