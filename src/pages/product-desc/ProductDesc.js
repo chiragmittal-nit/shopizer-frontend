@@ -7,7 +7,6 @@ import Error from './../../components/error/Error';
 import Loader from './../../components/loader/Loader';
 import { getProductById } from '../../redux/slices/product';
 import { addItem } from '../../redux/slices/cart';
-import { getCurrentUser } from './../../services/authService';
 
 import './ProductDesc.scss';
 
@@ -62,7 +61,7 @@ function ProductDesc({ product, addItem, submittingReview }) {
               )}
             </div>
             <hr />
-            {getCurrentUser() ? <Review productId={product._id} /> : ''}
+            <Review productId={product._id} />
           </div>
         </div>
       </div>

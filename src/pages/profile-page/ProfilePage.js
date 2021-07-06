@@ -1,14 +1,16 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { registerUserAsync } from '../../redux/slices/user';
+import { updateUserDetailsAsync } from '../../redux/slices/user';
+import { getCurrentUser } from '../../services/authService';
 
-function RegisterPage({ registerUser, history }) {
-  const [name, setName] = React.useState('');
-  const [email, setEmail] = React.useState('');
+function ProfilePage({ updateUserDetails, history }) {
+  const currentUser = getCurrentUser();
+  const [name, setName] = React.useState(currentUser.name);
+  const [email, setEmail] = React.useState(currentUser.email);
   const [password, setPassword] = React.useState('');
   const [confirmPassword, setConfirmPassword] = React.useState('');
 
-  const handleRegister = (e) => {
+  const handleUpdate = (e) => {
     e.preventDefault();
 
     if (password !== confirmPassword) {
@@ -18,12 +20,12 @@ function RegisterPage({ registerUser, history }) {
       return;
     }
 
-    const user = { name, email, password };
+    const updatedUser = { _id: currentUser._id, name, email, password };
     setName('');
     setEmail('');
     setPassword('');
     setConfirmPassword('');
-    registerUser(user);
+    updateUserDetails(updatedUser);
   };
 
   return (
@@ -35,7 +37,7 @@ function RegisterPage({ registerUser, history }) {
         >
           <div className="div">
             <h2 style={{ display: 'inline' }} className="text-center m-3">
-              Register
+              User Details
             </h2>
             <i
               style={{ fontSize: '25px' }}
@@ -47,7 +49,7 @@ function RegisterPage({ registerUser, history }) {
             {error && (<Error error ='Email Address is already registred' ></Error>)}
             {success && (<Success success='Your Registration is successfull' />)} */}
 
-            <form onSubmit={handleRegister}>
+            <form onSubmit={handleUpdate}>
               <input
                 type="text"
                 placeholder="name"
@@ -63,6 +65,7 @@ function RegisterPage({ registerUser, history }) {
                 placeholder="email"
                 className="form-control"
                 value={email}
+                readOnly
                 required
                 onChange={(e) => {
                   setEmail(e.target.value);
@@ -92,8 +95,8 @@ function RegisterPage({ registerUser, history }) {
               />
 
               <div className="text-right">
-                <button type="submit" className="btn btn-dark mt-3">
-                  REGISTER
+                <button type="submit " className="btn btn-dark mt-3">
+                  Update Details
                 </button>
               </div>
             </form>
@@ -110,7 +113,7 @@ function RegisterPage({ registerUser, history }) {
 // const mapStateToProps = (state) => ({});
 
 const mapDispatchToProps = (dispatch) => ({
-  registerUser: (user) => dispatch(registerUserAsync(user)),
+  updateUserDetails: (user) => dispatch(updateUserDetailsAsync(user)),
 });
 
-export default connect(null, mapDispatchToProps)(RegisterPage);
+export default connect(null, mapDispatchToProps)(ProfilePage);

@@ -7,15 +7,13 @@ import {
   getProductById,
 } from './../../redux/slices/product';
 
-function Review({ product, addProductReview }) {
+function Review({ currentUser, product, addProductReview }) {
   const [rating, setRating] = React.useState(5);
   const [comment, setComment] = React.useState('');
 
   const handleComment = () => {
     setRating(5);
     setComment('');
-
-    const currentUser = getCurrentUser();
 
     if (product.reviews.find((review) => review.userId === currentUser._id)) {
       alert('you already reviwed the product :)');
@@ -27,31 +25,36 @@ function Review({ product, addProductReview }) {
   };
   return (
     <div>
-      <h4 className="text-center">Give Your Review</h4>
-
-      <div>
-        <Rating
-          className="text-warning mb-3"
-          initialRating={rating}
-          emptySymbol="far fa-star"
-          fullSymbol="fas fa-star"
-          onChange={(e) => setRating(e)}
-        />
-        <input
-          className="form-control mb-2"
-          type="text"
-          placeholder="Loved the Product !!!"
-          value={comment}
-          onChange={(e) => setComment(e.target.value)}
-        />
-        <button
-          className="btn btn-dark text-uppercase p-2"
-          onClick={handleComment}
-        >
-          Submit Review
-        </button>
-      </div>
-
+      {currentUser ? (
+        <div>
+          <h4 className="text-center">Give Your Review</h4>
+          <div>
+            <Rating
+              className="text-warning mb-3"
+              initialRating={rating}
+              emptySymbol="far fa-star"
+              fullSymbol="fas fa-star"
+              onChange={(e) => setRating(e)}
+            />
+            <input
+              className="form-control mb-2"
+              type="text"
+              placeholder="Loved the Product !!!"
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
+            />
+            <button
+              className="btn btn-dark text-uppercase p-2"
+              onClick={handleComment}
+            >
+              Submit Review
+            </button>
+          </div>{' '}
+        </div>
+      ) : (
+        ''
+      )}
+      {console.log(product.reviews.length)}
       {product && product.reviews.length > 0 ? (
         <div>
           <h4 className="my-3">Latest Reviews</h4>
@@ -79,6 +82,7 @@ function Review({ product, addProductReview }) {
 
 const mapStateToProps = (state, { productId }) => ({
   product: getProductById(productId)(state),
+  currentUser: getCurrentUser(),
 });
 const mapDispatchToProps = (dispatch) => ({
   addProductReview: (productId, review) =>

@@ -1,7 +1,7 @@
 import { createSlice, createSelector } from '@reduxjs/toolkit';
 import auth from '../../services/authService';
 
-import { registerUser } from '../../services/userSevice';
+import { registerUser, updateUserDetails } from '../../services/userSevice';
 import { emptyCart } from './cart';
 
 const _ = require('lodash');
@@ -9,14 +9,17 @@ const _ = require('lodash');
 const currUser = auth.getCurrentUser();
 
 const initialState = currUser
-  ? { currentUser: currUser, error: null, isLoggedIn: true }
-  : { currentUser: null, error: null, isLoggedIn: false };
+  ? { currentUser: currUser, error: null, isLoggedIn: true, isLoading: false }
+  : { currentUser: null, error: null, isLoggedIn: false, isLoading: false };
 
 const user = createSlice({
   name: 'user',
   initialState,
   reducers: {
-    registerUserRequest: (state, action) => {},
+    registerUserRequest: (state, action) => {
+      state.isLoading = true;
+      state.error = null;
+    },
 
     registerUserSuccess: (state, action) => {
       state.currentUser = action.payload;
@@ -28,8 +31,23 @@ const user = createSlice({
       state.isLoggedIn = false;
     },
 
+    updateUserDetailsRequest: (state, action) => {
+      state.isLoading = true;
+      state.error = null;
+    },
+
+    updateUserDetailsSuccess: (state, action) => {
+      state.currentUser = action.payload;
+      state.error = null;
+      state.isLoggedIn = false;
+    },
+    updateUserDetailsFailure: (state, action) => {
+      state.error = action.payload;
+      state.isLoggedIn = false;
+    },
     loginUserRequest: (state, action) => {
       state.error = null;
+      state.isLoading = true;
     },
 
     loginUserSuccess: (state, action) => {
@@ -93,6 +111,32 @@ export const loginUserAsync = (credentials) => (dispatch) => {
       } else {
         dispatch(loginUserFailure(err.response.data));
       }
+    });
+};
+
+export const updateUserDetailsAsync = (updatedUser) => (dispatch) => {
+  const {
+    updateUserDetailsRequest,
+    updateUserDetailsFailure,
+    updateUserDetailsSuccess,
+  } = user.actions;
+
+  dispatch(updateUserDetailsRequest());
+  updateUserDetails(updatedUser)
+    .then((res) => {
+      dispatch(updateUserDetailsSuccess(res.data));
+      logout();
+    })
+    .catch((err) => {
+      console.log(err);
+      if (err.response)
+        return dispatch(updateUserDetailsFailure(err.response.data));
+      else
+        return dispatch(
+          updateUserDetailsFailure(
+            'Internal Server Error, Try After Some time.'
+          )
+        );
     });
 };
 

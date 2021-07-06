@@ -49,7 +49,7 @@ function Header({ totalQuantity, currentUser, logout, history }) {
                   className="dropdown-menu"
                   aria-labelledby="dropdownMenuButton"
                 >
-                  <Link className="dropdown-item" to="/profile">
+                  <Link className="dropdown-item" to="/me">
                     Profile
                   </Link>
                   <Link className="dropdown-item" to="/my-orders">

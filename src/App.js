@@ -8,6 +8,7 @@ import ProductDesc from './pages/product-desc/ProductDesc';
 import CheckoutPage from './pages/checkout-page/CheckoutPage';
 import RegisterPage from './pages/register-page/RegisterPage';
 import LoginPage from './pages/login-page/LoginPage';
+import ProfilePage from './pages/profile-page/ProfilePage';
 import OrdersList from './pages/orders-list/OrdersList';
 import auth from './services/authService';
 import { loginUserFromStorage } from './redux/slices/user';
@@ -35,6 +36,7 @@ function App({ currUser, setCurrentUser }) {
         <ProtectedRoute path="/check-out" component={CheckoutPage} />
         <ProtectedRoute path="/order-info/:orderId" component={OrderInfo} />
         <Route path="/" exact component={HomePage} />
+        <ProtectedRoute path="/me" component={ProfilePage} />
         <Redirect to="/not-found" />
       </Switch>
     </div>
