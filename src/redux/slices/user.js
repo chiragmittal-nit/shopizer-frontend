@@ -16,7 +16,7 @@ const user = createSlice({
   name: 'user',
   initialState,
   reducers: {
-    registerUserStart: (state, action) => {},
+    registerUserRequest: (state, action) => {},
 
     registerUserSuccess: (state, action) => {
       state.currentUser = action.payload;
@@ -28,7 +28,7 @@ const user = createSlice({
       state.isLoggedIn = false;
     },
 
-    loginUserStart: (state, action) => {
+    loginUserRequest: (state, action) => {
       state.error = null;
     },
 
@@ -52,9 +52,9 @@ export default user.reducer;
 // export const {} = user.actions;
 
 export const registerUserAsync = (newUser) => (dispatch) => {
-  const { registerUserStart, registerUserSuccess, registerUserFailure } =
+  const { registerUserRequest, registerUserSuccess, registerUserFailure } =
     user.actions;
-  dispatch(registerUserStart());
+  dispatch(registerUserRequest());
 
   registerUser(newUser)
     .then((response) => {
@@ -70,13 +70,14 @@ export const registerUserAsync = (newUser) => (dispatch) => {
       return dispatch(registerUserFailure(err.response.data));
     });
 };
-export const loginUserAsync = (credentials, location) => (dispatch) => {
-  const { loginUserStart, loginUserSuccess, loginUserFailure } = user.actions;
-  dispatch(loginUserStart());
+export const loginUserAsync = (credentials) => (dispatch) => {
+  const { loginUserRequest, loginUserSuccess, loginUserFailure } = user.actions;
+  dispatch(loginUserRequest());
 
   auth
     .loginUser(credentials)
     .then(({ data: jwt }) => {
+      console.log('logged in');
       localStorage.setItem(process.env.REACT_APP_tokenKey, jwt);
       dispatch(
         loginUserSuccess(
@@ -96,8 +97,8 @@ export const loginUserAsync = (credentials, location) => (dispatch) => {
 };
 
 export const loginUserFromStorage = (user) => (dispatch) => {
-  const { loginUserStart, loginUserSuccess } = user.actions;
-  dispatch(loginUserStart());
+  const { loginUserRequest, loginUserSuccess } = user.actions;
+  dispatch(loginUserRequest());
   return dispatch(loginUserSuccess(_.pick(user, ['name', 'email', '_id'])));
 };
 

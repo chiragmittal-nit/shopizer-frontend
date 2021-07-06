@@ -1,13 +1,13 @@
 import React from 'react';
 import { Route, Redirect } from 'react-router-dom';
-import { connect } from 'react-redux';
+import { getCurrentUser } from '../../services/authService';
 
-function ProtectedRoute({ path, currentUser, component: Component, render }) {
+function ProtectedRoute({ path, component: Component, render }) {
   return (
     <Route
       path={path}
       render={(props) => {
-        if (currentUser)
+        if (getCurrentUser())
           return Component ? <Component {...props} /> : render(props);
         else {
           console.log(props.location);
@@ -26,7 +26,4 @@ function ProtectedRoute({ path, currentUser, component: Component, render }) {
   );
 }
 
-const mapStateToProps = (state) => ({
-  currentUser: state.user.currentUser,
-});
-export default connect(mapStateToProps)(ProtectedRoute);
+export default ProtectedRoute;

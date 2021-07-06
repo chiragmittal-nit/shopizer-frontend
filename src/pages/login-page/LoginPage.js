@@ -23,7 +23,8 @@ function LoginPage({ loginUser, history, location, error }) {
     loginUser(credentials);
     if (!error) {
       const { state } = location;
-      window.location = state ? state.referrer.pathname : '/';
+      console.log(state);
+      history.push(state ? state.referrer.pathname : '/');
     }
   };
 

@@ -1,18 +1,23 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import Rating from 'react-rating';
 
-import './ProductDesc.scss';
+import Review from './../../components/review/Review';
+import Error from './../../components/error/Error';
+import Loader from './../../components/loader/Loader';
 import { getProductById } from '../../redux/slices/product';
 import { addItem } from '../../redux/slices/cart';
-import Error from './../../components/error/Error';
+import { getCurrentUser } from './../../services/authService';
 
-function ProductDesc({ product, addItem }) {
+import './ProductDesc.scss';
+
+function ProductDesc({ product, addItem, submittingReview }) {
   const [quantity, setQuantity] = React.useState(1);
 
   if (product)
-    return (
+    return submittingReview ? (
+      <Loader message="Registering your valuable Feedback !!" />
+    ) : (
       <div className="container-fluid">
         <div className="row">
           <div className="col-md-6">
@@ -56,6 +61,8 @@ function ProductDesc({ product, addItem }) {
                 <p className="text-danger text-capitalize">Out of Stock</p>
               )}
             </div>
+            <hr />
+            {getCurrentUser() ? <Review productId={product._id} /> : ''}
           </div>
         </div>
       </div>
@@ -83,6 +90,7 @@ const mapStateToProps = (
 ) => {
   return {
     product: getProductById(id)(state),
+    submittingReview: state.product.submittingReview,
   };
 };
 
