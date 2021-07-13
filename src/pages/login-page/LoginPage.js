@@ -5,7 +5,7 @@ import { loginUserAsync } from '../../redux/slices/user';
 import auth from '../../services/authService';
 import Error from './../../components/error/Error';
 
-function LoginPage({ loginUser, history, location, error }) {
+function LoginPage({ loginUser, error }) {
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
 
@@ -21,11 +21,6 @@ function LoginPage({ loginUser, history, location, error }) {
     setEmail('');
     setPassword('');
     loginUser(credentials);
-    if (!error) {
-      const { state } = location;
-      console.log(state);
-      history.push(state ? state.referrer.pathname : '/');
-    }
   };
 
   return (
@@ -35,42 +30,49 @@ function LoginPage({ loginUser, history, location, error }) {
           className="col-md-4 card p-3 shadow p-3 mb-5 bg-white rounded"
           style={{ marginTop: '100px' }}
         >
-          <div className="div">
-            <h2 style={{ display: 'inline' }} className="text-center m-3">
+          <div>
+            <h2 style={{ display: 'inline' }} className="text-center m-2">
               Login
             </h2>
             <i
-              style={{ fontSize: '25px' }}
-              className="fa fa-user-plus"
+              style={{ fontSize: '24px' }}
+              className="fas fa-sign-in-alt"
               aria-hidden="true"
             ></i>
 
             {error && <Error message={error} />}
 
-            <form onSubmit={handleLogin}>
-              <input
-                type="email"
-                placeholder="email"
-                className="form-control"
-                value={email}
-                required
-                onChange={(e) => {
-                  setEmail(e.target.value);
-                }}
-              />
-
-              <input
-                type="password"
-                placeholder="password"
-                className="form-control"
-                value={password}
-                required
-                onChange={(e) => {
-                  setPassword(e.target.value);
-                }}
-              />
-
-              <div className="text-right">
+            <form className="mt-3" onSubmit={handleLogin}>
+              <div className="form-group">
+                {' '}
+                <input
+                  type="email"
+                  placeholder="email"
+                  className="form-control"
+                  aria-describedby="emailHelp"
+                  value={email}
+                  required
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                  }}
+                />
+                <small id="emailHelp" class="form-text text-left text-muted">
+                  We'll never share your email with anyone else.
+                </small>
+              </div>
+              <div className="form-group">
+                <input
+                  type="password"
+                  placeholder="password"
+                  className="form-control"
+                  value={password}
+                  required
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                  }}
+                />
+              </div>
+              <div>
                 <button type="submit" className="btn btn-dark mt-3">
                   LOGIN
                 </button>
@@ -94,6 +96,4 @@ const mapDispatchToProps = (dispatch) => ({
   loginUser: (credentials) => dispatch(loginUserAsync(credentials)),
 });
 
-export default withRouter(
-  connect(mapStateToProps, mapDispatchToProps)(LoginPage)
-);
+export default connect(mapStateToProps, mapDispatchToProps)(LoginPage);

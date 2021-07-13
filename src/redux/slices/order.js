@@ -25,7 +25,7 @@ const order = createSlice({
     },
 
     fetchOrdersListSuccess: (state, action) => {
-      state.allOrders = action.payload;
+      state.orders = action.payload;
       state.isLoading = false;
     },
     fetchOrdersListFailure: (state, action) => {
@@ -36,7 +36,6 @@ const order = createSlice({
 });
 
 export default order.reducer;
-export const {} = order.actions;
 
 export const placeOrderAsync = (token, amount) => (dispatch, getState) => {
   const { placeOrderRequest, placeOrderSuccess, placeOrderFailure } =
@@ -76,10 +75,10 @@ export const fetchOrdersListByUserIdAsync = () => (dispatch, getState) => {
 
 const getAllOrders = createSelector(
   (state) => state.order,
-  (order) => order.allOrders
+  (order) => order.orders
 );
 
 export const getOrderById = (orderId) =>
-  createSelector(getAllOrders, (allOrders) =>
-    allOrders ? allOrders.find((order) => order._id === orderId) : null
+  createSelector(getAllOrders, (orders) =>
+    orders ? orders.find((order) => order._id === orderId) : null
   );

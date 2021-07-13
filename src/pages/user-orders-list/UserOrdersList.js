@@ -1,10 +1,10 @@
 import React from 'react';
-import Loader from './../../components/loader/Loader';
+import Loader from '../../components/loader/Loader';
 import { connect } from 'react-redux';
-import Error from './../../components/error/Error';
+import Error from '../../components/error/Error';
 import { fetchOrdersListByUserIdAsync } from '../../redux/slices/order';
 
-function OrdersList({
+function UserOrdersList({
   ordersList,
   error,
   isLoading,
@@ -66,7 +66,7 @@ function OrdersList({
 }
 
 const mapStateToProps = ({
-  order: { isLoading, error, allOrders: ordersList },
+  order: { isLoading, error, orders: ordersList },
 }) => ({
   isLoading,
   error,
@@ -76,4 +76,4 @@ const mapStateToProps = ({
 const mapDispatchToProps = (dispatch) => ({
   fetchOrdersListByUserId: () => dispatch(fetchOrdersListByUserIdAsync()),
 });
-export default connect(mapStateToProps, mapDispatchToProps)(OrdersList);
+export default connect(mapStateToProps, mapDispatchToProps)(UserOrdersList);

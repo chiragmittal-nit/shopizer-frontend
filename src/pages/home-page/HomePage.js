@@ -25,10 +25,13 @@ function HomePage({ products, error, isFetching, fetchAllProductsAsync }) {
       ) : (
         <div className="container">
           <Filter />
-          <div className="row row-cols-1 row-cols-md-3 row-cols-lg-4 justify-content-center">
+          <div className="row row-cols-1 row-cols-md-3 row-cols-lg-4 justify-content-around">
             {products.length &&
               products.map((product) => (
-                <div key={product._id} className="col m-3">
+                <div
+                  key={product._id}
+                  className="col m-3 shadow bg-white rounded p-2 mb-5"
+                >
                   <Product {...product} />
                 </div>
               ))}

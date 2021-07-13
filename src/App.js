@@ -9,11 +9,12 @@ import CheckoutPage from './pages/checkout-page/CheckoutPage';
 import RegisterPage from './pages/register-page/RegisterPage';
 import LoginPage from './pages/login-page/LoginPage';
 import ProfilePage from './pages/profile-page/ProfilePage';
-import OrdersList from './pages/orders-list/OrdersList';
+import UserOrdersList from './pages/user-orders-list/UserOrdersList';
 import auth from './services/authService';
 import { loginUserFromStorage } from './redux/slices/user';
 import ProtectedRoute from './components/protected-route/ProtectedRoute';
 import OrderInfo from './pages/order-info/OrderInfo';
+import AdminPage from './pages/admin-page/AdminPage';
 
 import './App.css';
 
@@ -32,11 +33,12 @@ function App({ currUser, setCurrentUser }) {
         <Route path="/product/:id" component={ProductDesc} />
         <Route path="/register" component={RegisterPage} />
         <Route path="/login" component={LoginPage} />
-        <ProtectedRoute path="/my-orders" component={OrdersList} />
+        <ProtectedRoute path="/my-orders" component={UserOrdersList} />
         <ProtectedRoute path="/check-out" component={CheckoutPage} />
         <ProtectedRoute path="/order-info/:orderId" component={OrderInfo} />
         <Route path="/" exact component={HomePage} />
         <ProtectedRoute path="/me" component={ProfilePage} />
+        <ProtectedRoute path="/admin" component={AdminPage} admin />
         <Redirect to="/not-found" />
       </Switch>
     </div>

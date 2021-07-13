@@ -1,6 +1,10 @@
 import { createSlice, createSelector } from '@reduxjs/toolkit';
+import {
+  addProduct,
+  deleteProduct,
+  updateProductDetails,
+} from '../../services/adminService';
 import { getCurrentUser } from '../../services/authService';
-
 import {
   fetchAllProducts,
   addProductReview,
@@ -16,6 +20,19 @@ const product = createSlice({
     submittingReview: false,
   },
   reducers: {
+    addProductRequest: (state, action) => {
+      state.isFetching = true;
+    },
+    addProductSuccess: (state, action) => {
+      const newProduct = action.payload;
+      state.products.push(newProduct);
+      state.error = null;
+      state.isFetching = false;
+    },
+    addProductFailure: (state, action) => {
+      state.isFetching = false;
+      state.error = action.payload;
+    },
     fetchProductsRequest: (state, action) => {
       state.isFetching = true;
     },
@@ -24,12 +41,45 @@ const product = createSlice({
       state.error = null;
       state.isFetching = false;
     },
-
     fetchProductsFailure: (state, action) => {
       state.isFetching = false;
       state.error = action.payload;
     },
 
+    updateProductDetailsRequest: (state, action) => {
+      state.isFetching = true;
+      state.error = null;
+    },
+
+    updateProductDetailsSuccess: (state, action) => {
+      const updatedProduct = action.payload;
+      const updatedProductIdx = state.products.findIndex(
+        (product) => product._id === updatedProduct._id
+      );
+      state.products[updatedProductIdx] = updatedProduct;
+      state.error = null;
+      state.isFetching = false;
+    },
+    updateProductDetailsFailure: (state, action) => {
+      state.error = action.payload;
+      state.isFetching = false;
+    },
+    deleteProductRequest: (state, action) => {
+      state.isFetching = true;
+    },
+    deleteProductSuccess: (state, action) => {
+      const deletedProduct = action.payload;
+      const deletedProductIdx = state.products.findIndex(
+        (product) => product._id === deletedProduct._id
+      );
+      state.products.splice(deletedProductIdx, 1);
+      state.error = null;
+      state.isFetching = false;
+    },
+    deleteProductFailure: (state, action) => {
+      state.isFetching = false;
+      state.error = action.payload;
+    },
     setFilterOptions: (state, action) => {
       const { searchKey, sortBy, category } = action.payload;
       state.filterOptions.searchKey = searchKey.toLowerCase();
@@ -86,6 +136,7 @@ export const getAllProducts = createSelector(
 
 export const getProductById = (id) =>
   createSelector(getAllProducts, (products) => {
+    console.log('inside getProductById');
     return products ? products.find((p) => p._id === id) : null;
   });
 
@@ -135,6 +186,69 @@ export const addProductReviewAsync = (productId, review) => (dispatch) => {
         dispatch(
           addProductReviewFailure('Internal Server Error, Try After Some time.')
         );
+      }
+    });
+};
+
+export const deleteProductAsync = (id) => (dispatch) => {
+  const { deleteProductRequest, deleteProductSuccess, deleteProductFailure } =
+    product.actions;
+  dispatch(deleteProductRequest());
+
+  deleteProduct(id)
+    .then((res) => {
+      dispatch(deleteProductSuccess(res.data));
+      console.log(window.location);
+    })
+    .catch((err) => {
+      console.log(err);
+      if (err.response) {
+        dispatch(deleteProductFailure(err.response.data));
+      } else {
+        dispatch(deleteProductFailure('Internal Server Error!'));
+      }
+    });
+};
+
+export const addProductAsync = (newProduct) => (dispatch) => {
+  const { addProductRequest, addProductSuccess, addProductFailure } =
+    product.actions;
+
+  dispatch(addProductRequest());
+
+  addProduct(newProduct)
+    .then((res) => {
+      dispatch(addProductSuccess(res.data));
+    })
+    .catch((err) => {
+      console.log(err);
+      if (err.response) {
+        dispatch(addProductFailure(err.response.data));
+      } else {
+        dispatch(addProductFailure('Internal Server Error!'));
+      }
+    });
+};
+
+export const updateProductDetailsAsync = (updatedProduct) => (dispatch) => {
+  const {
+    updateProductDetailsRequest,
+    updateProductDetailsSuccess,
+    updateProductDetailsFailure,
+  } = product.actions;
+
+  dispatch(updateProductDetailsRequest());
+
+  updateProductDetails(updatedProduct)
+    .then((res) => {
+      dispatch(updateProductDetailsSuccess(res.data));
+    })
+    .catch((err) => {
+      console.log(err);
+      if (err.response) {
+        dispatch(updateProductDetailsFailure(err.response.data));
+      } else {
+        dispatch(updateProductDetailsFailure('Internal Server Error!'));
       }
     });
 };

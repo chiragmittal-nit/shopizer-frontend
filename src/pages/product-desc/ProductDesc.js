@@ -9,16 +9,20 @@ import { getProductById } from '../../redux/slices/product';
 import { addItem } from '../../redux/slices/cart';
 
 import './ProductDesc.scss';
+import { fetchAllProductsAsync } from './../../redux/slices/product';
 
-function ProductDesc({ product, addItem, submittingReview }) {
+function ProductDesc({ product, addItem, submittingReview, fetchAllProducts }) {
   const [quantity, setQuantity] = React.useState(1);
+  React.useEffect(() => {
+    if (!product) fetchAllProducts();
+  }, []);
 
   if (product)
     return submittingReview ? (
       <Loader message="Registering your valuable Feedback !!" />
     ) : (
       <div className="container-fluid">
-        <div className="row">
+        <div className="row mt-3">
           <div className="col-md-6">
             <div className="card p-2 m-2">
               <h5>{product.name}</h5>
@@ -30,7 +34,7 @@ function ProductDesc({ product, addItem, submittingReview }) {
               <p>{product.description}</p>
             </div>
           </div>
-          <div className="col-md-6 text-start">
+          <div className="col-md-6 text-left">
             <div className="m-2">
               <h5 className="text-capitalize">{`price : ${product.price}`}</h5>
               <hr />
@@ -95,6 +99,7 @@ const mapStateToProps = (
 
 const mapDispatchToProps = (dispatch) => ({
   addItem: (product, quantity) => dispatch(addItem({ product, quantity })),
+  fetchAllProducts: () => dispatch(fetchAllProductsAsync()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProductDesc);

@@ -102,6 +102,7 @@ export const loginUserAsync = (credentials) => (dispatch) => {
           _.pick(auth.getCurrentUser(), ['name', 'email', '_id'])
         )
       );
+      window.location = '/';
     })
     .catch((err) => {
       if (!err.response) {
@@ -122,10 +123,10 @@ export const updateUserDetailsAsync = (updatedUser) => (dispatch) => {
   } = user.actions;
 
   dispatch(updateUserDetailsRequest());
-  updateUserDetails(updatedUser)
+  updateUserDetails(updatedUser._id, updatedUser)
     .then((res) => {
       dispatch(updateUserDetailsSuccess(res.data));
-      logout();
+      dispatch(logout());
     })
     .catch((err) => {
       console.log(err);
@@ -146,11 +147,11 @@ export const loginUserFromStorage = (user) => (dispatch) => {
   return dispatch(loginUserSuccess(_.pick(user, ['name', 'email', '_id'])));
 };
 
-export const logout = (dispatch) => {
+export const logout = () => (dispatch) => {
   auth.logout();
   dispatch(user.actions.logoutUser());
   dispatch(emptyCart());
-  window.location = '/';
+  window.location = '/login';
 };
 
 export const getLoginError = () =>

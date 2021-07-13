@@ -5,7 +5,7 @@ import Rating from 'react-rating';
 function Product({ _id: id, name, imageUrl, rating, price, history }) {
   return (
     <div
-      className="card h-100 "
+      className=" "
       onClick={() => history.push(`/product/${id}`)}
       style={{ cursor: 'pointer' }}
     >
